@@ -4,7 +4,8 @@
   "description": "Import content from Vinyl files in Rollup.",
   "main": "src/index.js",
   "scripts": {
-    "test": "node node_modules/ava/cli.js --watch"
+    "test": "node node_modules/ava/cli.js",
+    "test:watch": "node node_modules/ava/cli.js --watch"
   },
   "keywords": [
     "rollup",
