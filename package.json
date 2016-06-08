@@ -1,0 +1,21 @@
+{
+  "name": "rollup-plugin-vinyl",
+  "version": "0.1.0",
+  "description": "Import content from Vinyl files in Rollup.",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "node node_modules/ava/cli.js --watch"
+  },
+  "keywords": [
+    "rollup",
+    "vinyl",
+    "file",
+    "plugin"
+  ],
+  "author": "Valéry Herlaud <contact@operandom.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "ava": "^0.15.2",
+    "vinyl": "^1.1.1"
+  }
+}
