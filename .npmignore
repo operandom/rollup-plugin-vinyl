@@ -1,0 +1,8 @@
+test
+jsconfig.json
+.gitattributes
+.gitignore
+.jscsrc
+.eslintrc.json
+.travis.yml
+jsconfig.json
