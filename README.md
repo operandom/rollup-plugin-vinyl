@@ -1,6 +1,8 @@
 rollup-plugin-vinyl
 ===================
 
+[![Build Status](https://travis-ci.org/operandom/rollup-plugin-vinyl.svg)](https://travis-ci.org/operandom/rollup-plugin-vinyl) [![Dependecies status](https://david-dm.org/operandom/rollup-plugin-vinyl.svg)](https://david-dm.org/username/repo.svg)
+
 A [rollup.js](http://rollupjs.org) plugin to import from [Vinyl](https://github.com/gulpjs/vinyl) files.
 
 installation
