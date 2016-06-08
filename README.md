@@ -1,7 +1,7 @@
 rollup-plugin-vinyl
 ===================
 
-A [rollup.js](http://rollupjs.org) plugin to import from Vinyl files.
+A [rollup.js](http://rollupjs.org) plugin to import from [Vinyl](https://github.com/gulpjs/vinyl) files.
 
 installation
 ------------
