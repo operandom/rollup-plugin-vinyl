@@ -74,3 +74,24 @@ test('Should import from non-vinyl file', t => {
   t.true(id === Plugin.unix(fake.path));
 
 });
+
+
+test('Should not resolve id and not load on wrong import', t => {
+
+  var fake = new Vinyl({
+    base: path.resolve('src'),
+    path: path.resolve('src/lib/fake.js'),
+    contents: new Buffer('fake')
+  });
+
+  var plugin = Plugin(fake);
+
+  var filePath = path.resolve('src/main.js');
+  var wrongId  = 'src/lib/fail.js';
+
+  var id = plugin.resolveId(wrongId, filePath);
+
+  t.false(id === Plugin.unix(fake.path));
+  t.true(null === plugin.load(wrongId));
+
+});
