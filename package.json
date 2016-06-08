@@ -1,8 +1,15 @@
 {
   "name": "rollup-plugin-vinyl",
   "version": "0.1.0",
-  "description": "Import content from Vinyl files in Rollup.",
+  "description": "Import contents from Vinyl files in Rollup.",
   "main": "src/index.js",
+  "engines" : {
+    "node" : ">=0.10"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/operandom/rollup-plugin-vinyl"
+  },
   "scripts": {
     "test": "node node_modules/ava/cli.js",
     "test:watch": "node node_modules/ava/cli.js --watch"
