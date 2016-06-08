@@ -36,7 +36,7 @@ function RollupPluginVinyl(files) {
 
       if (pathes[importee]) {
         id = importee;
-      } else if (pathes[importer]) {
+      } else {
         id = RollupPluginVinyl.unix(path.resolve(
           path.dirname(importer),
           importee

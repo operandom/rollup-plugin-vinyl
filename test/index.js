@@ -55,3 +55,22 @@ test('Accept array as parameters, resolve ids, load contents and resolve relativ
 
 
 });
+
+
+test('Should import from non-vinyl file', t => {
+
+  var fake = new Vinyl({
+    base: path.resolve('src'),
+    path: path.resolve('src/lib/fake.js'),
+    contents: new Buffer('fake')
+  });
+
+  var plugin = Plugin(fake);
+
+  var filePath = path.resolve('src/main.js');
+
+  var id = plugin.resolveId(fake.relative, filePath);
+
+  t.true(id === Plugin.unix(fake.path));
+
+});
