@@ -4,7 +4,7 @@
   "description": "Import contents from Vinyl files in Rollup.",
   "main": "src/index.js",
   "engines" : {
-    "node" : ">=0.10"
+    "node" : ">=0.12"
   },
   "repository": {
     "type": "git",
