@@ -23,8 +23,6 @@ function RollupPluginVinyl(files) {
 
   return {
 
-    files: Array.isArray(files) ? files : [files],
-
     /**
      * @param {string} importee Import's id.
      * @param {string} importer Tmporter's id.
