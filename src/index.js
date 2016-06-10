@@ -2,9 +2,9 @@ var path = require('path');
 
 
 /**
- * Create a rollup plugin to pass Vinyl file to rollup
+ * Create a rollup plugin to pass Vinyl file to rollup.
  *
- * @param {Object|Array<Object>} file A vinyl file
+ * @param {Object|Array<Object>} files A vinyl file
  */
 function RollupPluginVinyl(files) {
 
@@ -14,10 +14,10 @@ function RollupPluginVinyl(files) {
 
 
   /** @type {Object} */
-  var pathes = {};
+  var paths = {};
 
   files.forEach(function(file) {
-    pathes[RollupPluginVinyl.unix(file.path)] = file;
+    paths[RollupPluginVinyl.unix(file.path)] = file;
   }, this);
 
 
@@ -34,7 +34,7 @@ function RollupPluginVinyl(files) {
 
       var id = null;
 
-      if (pathes[importee]) {
+      if (paths[importee]) {
         id = importee;
       } else {
         id = RollupPluginVinyl.unix(path.resolve(
@@ -51,7 +51,7 @@ function RollupPluginVinyl(files) {
      * @return {string} The file content
      */
     load: function (id) {
-      return pathes[id] ? pathes[id].contents.toString() : null;
+      return paths[id] ? paths[id].contents.toString() : null;
     }
 
   };
@@ -60,9 +60,10 @@ function RollupPluginVinyl(files) {
 
 
 /**
- * Transform native path to Unix path style
+ * Transform native path to Unix path style.
  *
  * @param {string} value A path.
+ * @param {string?} sep A custom separator
  * @return {string} a unix style path;
  */
 RollupPluginVinyl.unix = function unix(value, sep) {
