@@ -2,9 +2,9 @@ var hypothetical = require('rollup-plugin-hypothetical');
 
 
 /**
- * Create a rollup plugin to pass Vinyl file to rollup
+ * Create a rollup plugin to pass Vinyl file to rollup.
  *
- * @param {Object|Array<Object>} file A vinyl file
+ * @param {Object|Array<Object>} files A vinyl file
  */
 function RollupPluginVinyl(files) {
 
