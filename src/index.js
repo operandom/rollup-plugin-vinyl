@@ -1,4 +1,4 @@
-var path = require('path');
+var hypothetical = require('rollup-plugin-hypothetical');
 
 
 /**
@@ -14,59 +14,22 @@ function RollupPluginVinyl(files) {
 
 
   /** @type {Object} */
-  var paths = {};
+  var wonderland = {};
 
   files.forEach(function(file) {
-    paths[RollupPluginVinyl.unix(file.path)] = file;
-  }, this);
-
-
-  return {
-
-    /**
-     * @param {string} importee Import's id.
-     * @param {string} importer Tmporter's id.
-     * @return {string|null|undefined|false} id The resolved id.
-     */
-    resolveId: function (importee, importer) {
-
-      var id = null;
-
-      if (paths[importee]) {
-        id = importee;
-      } else {
-        id = RollupPluginVinyl.unix(path.resolve(
-          path.dirname(importer),
-          importee
-        ));
-      }
-
-      return id;
-    },
-
-    /**
-     * @param {string} id The id to load.
-     * @return {string} The file content
-     */
-    load: function (id) {
-      return paths[id] ? paths[id].contents.toString() : null;
+    if (!file.isBuffer()) {
+      throw Error('Content of file "' + file.path + '" is not a buffer.');
     }
+    wonderland[file.path] = file.contents.toString();
+  });
 
-  };
+
+  return hypothetical({
+    files: wonderland,
+    allowRealFiles: true
+  });
 
 }
-
-
-/**
- * Transform native path to Unix path style.
- *
- * @param {string} value A path.
- * @param {string?} sep A custom separator
- * @return {string} a unix style path;
- */
-RollupPluginVinyl.unix = function unix(value, sep) {
-  return value.split(sep || path.sep).join('/');
-};
 
 
 module.exports = RollupPluginVinyl;
