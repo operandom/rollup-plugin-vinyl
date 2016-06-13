@@ -60,7 +60,7 @@ function RollupPluginVinyl(files) {
       } else {
 
         var resolved = RollupPluginVinyl.unix(path.resolve(
-          path.dirname(importer),
+          path.dirname(importer || '.'),
           importee
         ));
 
