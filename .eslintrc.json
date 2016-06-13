@@ -1,56 +1,56 @@
 {
-    "extends": "eslint:recommended",
-    "env": {
-        "node": true
-    },
-    "parserOptions": {
-        "sourceType": "module"
-    },
-    "rules": {
-        "indent": [
-            "error",
-            2
-        ],
-        "linebreak-style": [
-            "error",
-            "unix"
-        ],
-        "quotes": [
-            "error",
-            "single"
-        ],
-        "semi": [
-            "error",
-            "always"
-        ],
-        "require-jsdoc": [
-            "error",
-            {
-                "require": {
-                    "FunctionDeclaration": true,
-                    "MethodDefinition": true,
-                    "ClassDeclaration": true
-                }
-            }
-        ],
-        "valid-jsdoc": [
-            "error",
-            {
-                "prefer": {
-                    "arg": "param",
-                    "argument": "param"
-                },
-                "preferType": {
-                    "Boolean": "boolean",
-                    "Number": "number",
-                    "object": "Object",
-                    "String": "string"
-                },
-                "requireReturn": true,
-                "matchDescription": ".+",
-                "requireParamDescription": true,
-                "requireReturnDescription": true
-            }
-        ]
-    }
+  "extends": "eslint:recommended",
+  "env": {
+    "node": true
+  },
+  "parserOptions": {
+    "sourceType": "module"
+  },
+  "rules": {
+    "indent": [
+      "error",
+      2
+    ],
+    "linebreak-style": [
+      "error",
+      "unix"
+    ],
+    "quotes": [
+      "error",
+      "single"
+    ],
+    "semi": [
+      "error",
+      "always"
+    ],
+    "require-jsdoc": [
+      "error",
+      {
+        "require": {
+          "FunctionDeclaration": true,
+          "MethodDefinition": true,
+          "ClassDeclaration": true
+        }
+      }
+    ],
+    "valid-jsdoc": [
+      "error",
+      {
+        "prefer": {
+          "arg": "param",
+          "argument": "param"
+        },
+        "preferType": {
+          "Boolean": "boolean",
+          "Number": "number",
+          "object": "Object",
+          "String": "string"
+        },
+        "requireReturn": true,
+        "matchDescription": ".+",
+        "requireParamDescription": true,
+        "requireReturnDescription": true
+      }
+    ]
+  }
 }
