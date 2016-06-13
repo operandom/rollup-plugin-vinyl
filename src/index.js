@@ -38,10 +38,15 @@ function RollupPluginVinyl(files) {
       if (paths[importee]) {
         id = importee;
       } else {
-        id = RollupPluginVinyl.unix(path.resolve(
+
+        var resolved = RollupPluginVinyl.unix(path.resolve(
           path.dirname(importer),
           importee
         ));
+
+        if (paths[resolved]) {
+          id = resolved;
+        }
       }
 
       return id;
@@ -54,6 +59,13 @@ function RollupPluginVinyl(files) {
      * @return {string} The file content
      */
     load: function (id) {
+
+      if (id == null) {
+        return id;
+      }
+
+      id = RollupPluginVinyl.unix(id);
+
       return paths[id] ? paths[id].contents.toString() : null;
     }
 
