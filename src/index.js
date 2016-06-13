@@ -5,6 +5,7 @@ var path = require('path');
  * Create a rollup plugin to pass Vinyl file to rollup.
  *
  * @param {Object|Array<Object>} files A vinyl file
+ * @return {{ resolveId: Function, load: Function }} The plugin object
  */
 function RollupPluginVinyl(files) {
 
@@ -24,8 +25,10 @@ function RollupPluginVinyl(files) {
   return {
 
     /**
+     * Resolve import id.
+     *
      * @param {string} importee Import's id.
-     * @param {string} importer Tmporter's id.
+     * @param {string} importer Importer's id.
      * @return {string|null|undefined|false} id The resolved id.
      */
     resolveId: function (importee, importer) {
@@ -45,6 +48,8 @@ function RollupPluginVinyl(files) {
     },
 
     /**
+     * Load content for a given id.
+     *
      * @param {string} id The id to load.
      * @return {string} The file content
      */
