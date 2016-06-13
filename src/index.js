@@ -1,5 +1,16 @@
 var path = require('path');
 
+/** @type {string} The name of the plugin */
+var PLUGIN_NAME = 'Vinyl plugin';
+
+/** @type {string} The version of the plugin */
+var VERSION = require('../package.json').version;
+
+/** @type {string} The template used to generate errors for unsupported stream contents */
+var TEMPLATE_ERROR_STREAM = '[' + PLUGIN_NAME + '] %s > Stream contents are not supported';
+
+/** @type {string} The template used to generate errors for unsupported null contents */
+var TEMPLATE_ERROR_NULL   = '[' + PLUGIN_NAME + '] %s > Content can not be null';
 
 /**
  * Create a rollup plugin to pass Vinyl file to rollup.
@@ -18,6 +29,15 @@ function RollupPluginVinyl(files) {
   var paths = {};
 
   files.forEach(function(file) {
+
+    if (file.isNull()) {
+      throw new Error(TEMPLATE_ERROR_NULL.replace('%s', file.path));
+    }
+
+    if (file.isStream()) {
+      throw new Error(TEMPLATE_ERROR_STREAM.replace('%s', file.path));
+    }
+
     paths[RollupPluginVinyl.unix(file.path)] = file;
   }, this);
 
@@ -85,5 +105,10 @@ RollupPluginVinyl.unix = function unix(value) {
   return value.split(path.sep).join('/');
 };
 
+RollupPluginVinyl.NAME = PLUGIN_NAME;
+RollupPluginVinyl.VERSION = VERSION;
+
+RollupPluginVinyl.TEMPLATE_ERROR_STREAM = TEMPLATE_ERROR_STREAM;
+RollupPluginVinyl.TEMPLATE_ERROR_NULL   = TEMPLATE_ERROR_NULL;
 
 module.exports = RollupPluginVinyl;

@@ -1,4 +1,5 @@
 import fs from 'fs';
+import { Readable } from 'stream';
 import path from 'path';
 import test from 'ava';
 import { rollup } from 'rollup';
@@ -185,6 +186,44 @@ test('should load knew ids from other plugins', t => {
 
 });
 
+
+test('should throw error on stream contents', t => {
+
+  var fullpath = path.resolve('stream.js');
+
+  var error = t.throws(() => {
+
+    vinyl([
+      new File({
+        path: fullpath,
+        contents: new Readable()
+      })
+    ]);
+
+  });
+
+  t.true(error.message === vinyl.TEMPLATE_ERROR_STREAM.replace('%s', fullpath));
+
+});
+
+
+test('should throw error on empty contents', t => {
+
+  var fullpath = path.resolve('null.js');
+
+  var error = t.throws(() => {
+
+    vinyl([
+      new File({
+        path: fullpath
+      })
+    ]);
+
+  });
+
+  t.true(error.message === vinyl.TEMPLATE_ERROR_NULL.replace('%s', fullpath));
+
+});
 
 
 
