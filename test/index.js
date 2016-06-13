@@ -2,7 +2,6 @@ import fs from 'fs';
 import path from 'path';
 import test from 'ava';
 import { rollup } from 'rollup';
-import alias from 'rollup-plugin-alias';
 import File from 'vinyl';
 import vinyl from '../';
 import { linter } from 'eslint';
@@ -173,9 +172,9 @@ test('should load knew ids from other plugins', t => {
           contents: new Buffer('export default "a";')
         })
       ]),
-      alias({
-        b: path.resolve('lib/a.js')
-      })
+      {
+        resolveId: id => id === 'b' ? path.resolve('lib/a.js') : undefined
+      }
 
     ]
   })
