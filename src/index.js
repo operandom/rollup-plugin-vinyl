@@ -7,10 +7,10 @@ var PLUGIN_NAME = 'Vinyl plugin';
 var VERSION = require('../package.json').version;
 
 /** @type {string} The template used to generate errors for unsupported stream contents */
-var TEMPLATE_ERROR_STREAM = '[' + PLUGIN_NAME + '] %s > Stream contents are not supported';
+var TEMPLATE_ERROR_STREAM = '[' + PLUGIN_NAME + '] Stream contents are not supported (%s)';
 
 /** @type {string} The template used to generate errors for unsupported null contents */
-var TEMPLATE_ERROR_NULL   = '[' + PLUGIN_NAME + '] %s > Content can not be null';
+var TEMPLATE_ERROR_NULL   = '[' + PLUGIN_NAME + '] Content can not be null (%s)';
 
 /**
  * Create a rollup plugin to pass Vinyl file to rollup.
