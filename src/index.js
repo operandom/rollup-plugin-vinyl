@@ -81,8 +81,8 @@ function RollupPluginVinyl(files) {
  * @param {string?} sep A custom separator
  * @return {string} a unix style path;
  */
-RollupPluginVinyl.unix = function unix(value, sep) {
-  return value.split(sep || path.sep).join('/');
+RollupPluginVinyl.unix = function unix(value) {
+  return value.split(path.sep).join('/');
 };
 
 
