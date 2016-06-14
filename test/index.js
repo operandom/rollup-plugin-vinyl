@@ -8,6 +8,10 @@ import vinyl from '../';
 import { linter } from 'eslint';
 
 
+
+/* ESLINT */
+
+
 test('Should not make eslint errors.', t => {
 
   return Promise.all([
@@ -40,6 +44,10 @@ test('Should not make eslint errors.', t => {
 });
 
 
+
+/* VINYL FILES */
+
+
 test('Accept Vinyl as parameter, resolve his id and load his contents.', t => {
 
   var file = new File({
@@ -47,7 +55,7 @@ test('Accept Vinyl as parameter, resolve his id and load his contents.', t => {
     contents: new Buffer('fake')
   });
 
-  var unixPath = vinyl.unix(file.path);
+  var unixPath = vinyl._unix(file.path);
 
   var plugin = vinyl(file);
   var id = plugin.resolveId(unixPath);
@@ -65,14 +73,14 @@ test('Accept array as parameters, resolve ids, load contents and resolve relativ
     path: path.resolve('src/fake.js'),
     contents: new Buffer('fake1')
   });
-  var unixPath1 = vinyl.unix(fake1.path);
+  var unixPath1 = vinyl._unix(fake1.path);
 
   var fake2 = new File({
     base: path.resolve('src'),
     path: path.resolve('src/lib/import.js'),
     contents: new Buffer('fake2')
   });
-  var unixPath2 = vinyl.unix(fake2.path);
+  var unixPath2 = vinyl._unix(fake2.path);
 
   var plugin = vinyl([fake1, fake2]);
   var id1 = plugin.resolveId(unixPath1);
@@ -84,9 +92,9 @@ test('Accept array as parameters, resolve ids, load contents and resolve relativ
   t.true(plugin.load(id2) === fake2.contents.toString());
 
 
-  var relativeId = plugin.resolveId(vinyl.unix(fake2.relative), id1);
+  var relativeId = plugin.resolveId(vinyl._unix(fake2.relative), id1);
 
-  t.true(relativeId === vinyl.unix(fake2.path));
+  t.true(relativeId === vinyl._unix(fake2.path));
   t.true(plugin.load(relativeId) === fake2.contents.toString());
 
 
@@ -107,12 +115,12 @@ test('Should import from non-vinyl file', t => {
 
   var id = plugin.resolveId(fake.relative, filePath);
 
-  t.true(id === vinyl.unix(fake.path));
+  t.true(id === vinyl._unix(fake.path));
 
 });
 
 
-test('Should not resolve id and not load on wrong import', t => {
+test('Should not resolve and not load unknow ids', t => {
 
   var fake = new File({
     base: path.resolve('src'),
@@ -127,10 +135,14 @@ test('Should not resolve id and not load on wrong import', t => {
 
   var id = plugin.resolveId(wrongId, filePath);
 
-  t.false(id === vinyl.unix(fake.path));
+  t.false(id === vinyl._unix(fake.path));
   t.true(null === plugin.load(wrongId));
 
 });
+
+
+
+/* ROLLUP */
 
 
 test('should handle an entry point', t => {
@@ -187,6 +199,10 @@ test('should load knew ids from other plugins', t => {
 });
 
 
+
+/* CONTENTS */
+
+
 test('should throw error on stream contents', t => {
 
   var fullpath = path.resolve('stream.js');
@@ -223,6 +239,64 @@ test('should throw error on empty contents', t => {
 
   t.true(error.message === vinyl.TEMPLATE_ERROR_NULL.replace('%s', fullpath));
 
+});
+
+
+
+/* MODULES */
+
+
+test('Should resolve id for module as file', t => {
+
+  var modulepath = 'lib/module';
+  var moduleFullpath = path.resolve(modulepath);
+  var fullpath = path.resolve(moduleFullpath + '.js');
+
+  var plugin = vinyl([
+    new File({
+      path: fullpath,
+      contents: new Buffer('module')
+    })
+  ]);
+
+  t.true(
+    plugin.resolveId(vinyl._unix(moduleFullpath)) === vinyl._unix(fullpath)
+  );
+
+});
+
+
+test('Should resolve id for module as folder', t => {
+
+  var modulepath = 'lib/module';
+  var moduleFullpath = path.resolve(modulepath);
+  var fullpath = path.resolve(moduleFullpath + '/index.js');
+
+  var entryFullpath = path.resolve('entry.js');
+
+  var plugin = vinyl([
+    new File({
+      path: entryFullpath,
+      contents: new Buffer(`import m from ${modulepath}`)
+    }),
+    new File({
+      path: fullpath,
+      contents: new Buffer('export default "module"')
+    })
+  ]);
+
+  t.true(
+    plugin.resolveId(vinyl._unix(moduleFullpath)) === vinyl._unix(fullpath),
+    'Absolute path can not be resolved'
+  );
+
+  t.true(
+    plugin.resolveId(
+      'lib/module',
+      vinyl._unix(entryFullpath)
+    ) === vinyl._unix(fullpath),
+    'Relative path can not be resolved'
+  );
 });
 
 

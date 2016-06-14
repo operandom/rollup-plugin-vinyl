@@ -12,6 +12,7 @@ var TEMPLATE_ERROR_STREAM = '[' + PLUGIN_NAME + '] Stream contents are not suppo
 /** @type {string} The template used to generate errors for unsupported null contents */
 var TEMPLATE_ERROR_NULL   = '[' + PLUGIN_NAME + '] Content can not be null (%s)';
 
+
 /**
  * Create a rollup plugin to pass Vinyl file to rollup.
  *
@@ -38,7 +39,7 @@ function RollupPluginVinyl(files) {
       throw new Error(TEMPLATE_ERROR_STREAM.replace('%s', file.path));
     }
 
-    paths[RollupPluginVinyl.unix(file.path)] = file;
+    paths[unix(file.path)] = file;
   }, this);
 
 
@@ -53,20 +54,15 @@ function RollupPluginVinyl(files) {
      */
     resolveId: function (importee, importer) {
 
-      var id = null;
+      var id = getIdOrNull(paths, resolve(importee));
 
-      if (paths[importee]) {
-        id = importee;
-      } else {
+      if (importer) {
 
-        var resolved = RollupPluginVinyl.unix(path.resolve(
-          path.dirname(importer || '.'),
-          importee
-        ));
+        id = id || getIdOrNull(
+          paths,
+          resolve(path.dirname(importer || '.'), importee)
+        );
 
-        if (paths[resolved]) {
-          id = resolved;
-        }
       }
 
       return id;
@@ -84,13 +80,76 @@ function RollupPluginVinyl(files) {
         return id;
       }
 
-      id = RollupPluginVinyl.unix(id);
+      id = unix(id);
 
       return paths[id] ? paths[id].contents.toString() : null;
     }
 
   };
 
+}
+
+
+Object.defineProperties(RollupPluginVinyl, {
+
+  NAME: {
+    enumerable: true,
+    value: PLUGIN_NAME
+  },
+
+  VERSION: {
+    enumerable: true,
+    value: VERSION
+  },
+
+  TEMPLATE_ERROR_NULL: {
+    enumerable: true,
+    value: TEMPLATE_ERROR_NULL
+  },
+
+  TEMPLATE_ERROR_STREAM: {
+    enumerable: true,
+    value: TEMPLATE_ERROR_STREAM
+  },
+
+  _unix: {
+    writable: true,
+    value: unix
+  },
+
+  _getIdOrNull: {
+    writable: true,
+    value: getIdOrNull
+  },
+
+  _resolve: {
+    writable: true,
+    value: resolve
+  }
+
+});
+
+
+module.exports = RollupPluginVinyl;
+
+
+/* TOOLS */
+
+/**
+ * Find id for a key given in object.
+ *
+ * @param {Object} o A ids dictionnary
+ * @param {string} key a key to resolve
+ * @returns {string|null} The matching id or null.
+ */
+function getIdOrNull(o, key) {
+
+  var id;
+
+  return o[id = key] ? id :
+         o[id = key + '.js'] ? id :
+         o[id = key + '/index.js'] ? id :
+         null;
 }
 
 
@@ -101,14 +160,18 @@ function RollupPluginVinyl(files) {
  * @param {string?} sep A custom separator
  * @return {string} a unix style path;
  */
-RollupPluginVinyl.unix = function unix(value) {
+function unix(value) {
   return value.split(path.sep).join('/');
-};
+}
 
-RollupPluginVinyl.NAME = PLUGIN_NAME;
-RollupPluginVinyl.VERSION = VERSION;
 
-RollupPluginVinyl.TEMPLATE_ERROR_STREAM = TEMPLATE_ERROR_STREAM;
-RollupPluginVinyl.TEMPLATE_ERROR_NULL   = TEMPLATE_ERROR_NULL;
+/**
+ * Resolve to an absolute unix style path.
+ *
+ * @param {...string} value A path
+ * @return {string} A cleaned absolute path
+ */
+function resolve(value) {
+  return unix(path.resolve.apply(path, arguments));
+}
 
-module.exports = RollupPluginVinyl;
