@@ -17,16 +17,32 @@ Usage
 -----
 
 ```javascript
-import files from 'rollup-plugin-vinyl';
+import vinyl from 'rollup-plugin-vinyl';
+import File from 'vinyl';
 
 export default {
   entry: 'src/main.js',
   format: 'cjs',
   plugins: [
-      // single file
-      files(vinylFile),
-      // multiple files
-      files([vinylFile1, vinylFile2, ...]);
+
+      // Single file
+      vinyl({ files: new File({ ... }) }),
+
+      // Multiple files
+      vinyl({ files: [
+          vinylFile1,
+          vinylFile2,
+          ...
+      ] }),
+
+      // Custom module resolution
+      // It will resolve import `import Module from 'lib/module'`
+      // in `lib/module.ts` and if not founded by `lib/module/indes.ts`
+      vinyl({
+        extension: 'ts',
+        files: ...
+      })
+
   ],
   dest: 'bundle.js'
 }
