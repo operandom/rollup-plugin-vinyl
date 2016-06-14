@@ -32,11 +32,11 @@ function RollupPluginVinyl(files) {
   files.forEach(function(file) {
 
     if (file.isNull()) {
-      throw new Error(TEMPLATE_ERROR_NULL.replace('%s', file.path));
+      throw new Error(RollupPluginVinyl.TEMPLATE_ERROR_NULL.replace('%s', file.path));
     }
 
     if (file.isStream()) {
-      throw new Error(TEMPLATE_ERROR_STREAM.replace('%s', file.path));
+      throw new Error(RollupPluginVinyl.TEMPLATE_ERROR_STREAM.replace('%s', file.path));
     }
 
     paths[unix(file.path)] = file;
@@ -104,11 +104,13 @@ Object.defineProperties(RollupPluginVinyl, {
 
   TEMPLATE_ERROR_NULL: {
     enumerable: true,
+    writable: true,
     value: TEMPLATE_ERROR_NULL
   },
 
   TEMPLATE_ERROR_STREAM: {
     enumerable: true,
+    writable: true,
     value: TEMPLATE_ERROR_STREAM
   },
 
