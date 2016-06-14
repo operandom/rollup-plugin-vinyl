@@ -45,6 +45,54 @@ test('Should not make eslint errors.', t => {
 
 
 
+/* OPTIONS */
+
+
+test('Should throw the good error on missing options object.', t => {
+
+  var error = t.throws(() => {
+    vinyl();
+  });
+
+  var expected = vinyl._createError(
+    vinyl.TEMPLATE_ERROR_OPTIONS,
+    [undefined]
+  );
+
+  t.true(error.message === expected.message);
+
+});
+
+
+test('Should throw the good error on missing required files option.', t => {
+
+  var error = t.throws(() => {
+    vinyl({});
+  });
+
+  var expected = vinyl._createError(
+    vinyl.TEMPLATE_ERROR_OPTIONS_FILES,
+    []
+  );
+
+  t.true(error.message === expected.message);
+
+});
+
+
+test('Should give access to options object', t => {
+
+  var options = { files:  new File({
+    path: path.resolve('unused.js'),
+    contents: new Buffer('unused')
+  })};
+
+  t.deepEqual(vinyl(options)._options, options);
+
+});
+
+
+
 /* VINYL FILES */
 
 
@@ -57,7 +105,7 @@ test('Accept Vinyl as parameter, resolve his id and load his contents.', t => {
 
   var unixPath = vinyl._unix(file.path);
 
-  var plugin = vinyl(file);
+  var plugin = vinyl({ files: file });
   var id = plugin.resolveId(unixPath);
 
   t.true(id === unixPath);
@@ -82,7 +130,7 @@ test('Accept array as parameters, resolve ids, load contents and resolve relativ
   });
   var unixPath2 = vinyl._unix(fake2.path);
 
-  var plugin = vinyl([fake1, fake2]);
+  var plugin = vinyl({ files: [fake1, fake2] });
   var id1 = plugin.resolveId(unixPath1);
   var id2 = plugin.resolveId(unixPath2);
 
@@ -109,7 +157,7 @@ test('Should import from non-vinyl file', t => {
     contents: new Buffer('fake')
   });
 
-  var plugin = vinyl(fake);
+  var plugin = vinyl({ files: fake });
 
   var filePath = path.resolve('src/main.js');
 
@@ -128,7 +176,7 @@ test('Should not resolve and not load unknow ids', t => {
     contents: new Buffer('fake')
   });
 
-  var plugin = vinyl(fake);
+  var plugin = vinyl({ files: fake });
 
   var filePath = path.resolve('src/main.js');
   var wrongId = 'src/lib/fail.js';
@@ -150,7 +198,7 @@ test('should handle an entry point', t => {
   return rollup({
     entry: 'entry.js',
     plugins: [
-      vinyl([
+      vinyl({ files :[
         new File({
           path: path.resolve('./entry.js'),
           contents: new Buffer('import Fake from \'lib/Fake.js\'; console.log(Fake)')
@@ -159,7 +207,7 @@ test('should handle an entry point', t => {
           path: path.resolve('./lib/Fake.js'),
           contents: new Buffer('export default "I\'m a fake !"')
         })
-      ])
+      ] })
     ]
   })
   .then((bundle) => {
@@ -175,7 +223,7 @@ test('should load knew ids from other plugins', t => {
   return rollup({
     entry: 'lib/entry.js',
     plugins: [
-      vinyl([
+      vinyl({ files: [
         new File({
           path: path.resolve('lib/entry.js'),
           contents: new Buffer('import a from "b"; console.log(a);')
@@ -184,7 +232,7 @@ test('should load knew ids from other plugins', t => {
           path: path.resolve('lib/a.js'),
           contents: new Buffer('export default "a";')
         })
-      ]),
+      ] }),
       {
         resolveId: id => id === 'b' ? path.resolve('lib/a.js') : undefined
       }
@@ -209,12 +257,10 @@ test('should throw error on stream contents', t => {
 
   var error = t.throws(() => {
 
-    vinyl([
-      new File({
-        path: fullpath,
-        contents: new Readable()
-      })
-    ]);
+    vinyl({ files: new File({
+      path: fullpath,
+      contents: new Readable()
+    }) });
 
   });
 
@@ -229,11 +275,9 @@ test('should throw error on empty contents', t => {
 
   var error = t.throws(() => {
 
-    vinyl([
-      new File({
-        path: fullpath
-      })
-    ]);
+    vinyl({ files: new File({
+      path: fullpath
+    }) });
 
   });
 
@@ -252,12 +296,10 @@ test('Should resolve id for module as file', t => {
   var moduleFullpath = path.resolve(modulepath);
   var fullpath = path.resolve(moduleFullpath + '.js');
 
-  var plugin = vinyl([
-    new File({
-      path: fullpath,
-      contents: new Buffer('module')
-    })
-  ]);
+  var plugin = vinyl({ files: new File({
+    path: fullpath,
+    contents: new Buffer('module')
+  }) });
 
   t.true(
     plugin.resolveId(vinyl._unix(moduleFullpath)) === vinyl._unix(fullpath)
@@ -274,7 +316,7 @@ test('Should resolve id for module as folder', t => {
 
   var entryFullpath = path.resolve('entry.js');
 
-  var plugin = vinyl([
+  var plugin = vinyl({ files: [
     new File({
       path: entryFullpath,
       contents: new Buffer(`import m from ${modulepath}`)
@@ -283,7 +325,44 @@ test('Should resolve id for module as folder', t => {
       path: fullpath,
       contents: new Buffer('export default "module"')
     })
-  ]);
+  ] });
+
+  t.true(
+    plugin.resolveId(vinyl._unix(moduleFullpath)) === vinyl._unix(fullpath),
+    'Absolute path can not be resolved'
+  );
+
+  t.true(
+    plugin.resolveId(
+      'lib/module',
+      vinyl._unix(entryFullpath)
+    ) === vinyl._unix(fullpath),
+    'Relative path can not be resolved'
+  );
+});
+
+
+test('Should resolve id for module as folder with extension option is set', t => {
+
+  var modulepath = 'lib/module';
+  var moduleFullpath = path.resolve(modulepath);
+  var fullpath = path.resolve(moduleFullpath + '/index.ts');
+
+  var entryFullpath = path.resolve('entry.ts');
+
+  var plugin = vinyl({
+    extension: 'ts',
+    files: [
+      new File({
+        path: entryFullpath,
+        contents: new Buffer(`import m from ${modulepath}`)
+      }),
+      new File({
+        path: fullpath,
+        contents: new Buffer('export default "module"')
+      })
+    ]
+  });
 
   t.true(
     plugin.resolveId(vinyl._unix(moduleFullpath)) === vinyl._unix(fullpath),
