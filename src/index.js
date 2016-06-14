@@ -50,7 +50,7 @@ function RollupPluginVinyl(files) {
      *
      * @param {string} importee Import's id.
      * @param {string} importer Importer's id.
-     * @return {string|null|undefined|false} id The resolved id.
+     * @return {string|null} id The resolved id.
      */
     resolveId: function (importee, importer) {
 
@@ -140,17 +140,20 @@ module.exports = RollupPluginVinyl;
 /**
  * Find id for a key given in object.
  *
- * @param {Object} o A ids dictionnary
- * @param {string} key a key to resolve
+ * @param {Object} o An ids dictionnary
+ * @param {string} key A key to resolve
+ * @param {string} ext A custom extension
  * @returns {string|null} The matching id or null.
  */
-function getIdOrNull(o, key) {
+function getIdOrNull(o, key, ext) {
 
   var id;
 
+  ext = ext || 'js';
+
   return o[id = key] ? id :
-         o[id = key + '.js'] ? id :
-         o[id = key + '/index.js'] ? id :
+         o[id = key + '.' + ext] ? id :
+         o[id = key + '/index.' + ext] ? id :
          null;
 }
 
@@ -159,8 +162,8 @@ function getIdOrNull(o, key) {
  * Transform native path to Unix path style.
  *
  * @param {string} value A path.
- * @param {string?} sep A custom separator
- * @return {string} a unix style path;
+ * @param {string?} sep A custom separator.
+ * @return {string} a unix style path.
  */
 function unix(value) {
   return value.split(path.sep).join('/');
