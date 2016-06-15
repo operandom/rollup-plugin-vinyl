@@ -209,7 +209,6 @@ function getIdOrNull(o, key, ext) {
  * Transform native path to Unix path style.
  *
  * @param {string} value A path.
- * @param {string?} sep A custom separator.
  * @return {string} a unix style path.
  */
 function unix(value) {
