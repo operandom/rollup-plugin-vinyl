@@ -36,8 +36,8 @@ export default {
       ] }),
 
       // Custom module resolution
-      // It will resolve import `import Module from 'lib/module'`
-      // in `lib/module.ts` and if not founded by `lib/module/indes.ts`
+      // This will resolve `import Module from 'lib/module'`
+      // to `lib/module.ts` or `lib/module/index.ts`
       vinyl({
         extension: 'ts',
         files: ...
